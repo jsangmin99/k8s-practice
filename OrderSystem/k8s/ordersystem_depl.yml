@@ -33,46 +33,46 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: REDIS_HOST
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: DB_HOST
             valueFrom:
               secretKeyRef:
                 key: DB_HOST
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: DB_USERNAME
             valueFrom:
               secretKeyRef:
                 key: DB_USERNAME
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: DB_PASSWORD
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: AWS_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: AWS_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_KEY
-                name: sm-app-secret
+                name: sm-app-secrets
           
           - name: JWT_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 key: JWT_SECRET_KEY
-                name: sm-app-secret
+                name: sm-app-secrets
 
           - name: JWT_SECRET_KEY_RT
             valueFrom:
               secretKeyRef:
                 key: JWT_SECRET_KEY_RT
-                name: sm-app-secret
+                name: sm-app-secrets
