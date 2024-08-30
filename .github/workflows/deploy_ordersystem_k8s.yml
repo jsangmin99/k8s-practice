@@ -1,0 +1,30 @@
+# docker build후 ECR 업로드 및 kubectl apply
+
+name: deploy_ordersystem_k8s
+on: 
+  push:
+    branches: 
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: install kubctl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.26.0'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      
+      - name: update cluster information
+        run: aws eks update-kubernetes-version --name 5team-cluster --region ap-northeast-2
+
