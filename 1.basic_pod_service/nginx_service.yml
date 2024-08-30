@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sangmin-nginx-service
+  namespace: sm
+spec:
+  # 노드를 통해 직접 접근 가능한 타입 (NordPort, LoadBalancer)
+  type: NodePort
+  ports:
+  - port: 80 # service Port를 의미, 
+    targetPort: 80 #service가 라우팅해줄 대상의 port
+    nodePort: 30510 # 워커노드의 포트를 의미
+  # Pod의 labels.app 과 service의 selector.app를 통해 매핑
+  selector:
+    app: my-nginx

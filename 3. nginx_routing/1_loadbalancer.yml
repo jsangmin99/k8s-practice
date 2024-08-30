@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx-deployment
+  namespace: sm
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: sm
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80 # service Port를 의미,
+      targetPort: 80 #service가 라우팅해줄 대상의 port
+  selector:
+    app: my-nginx

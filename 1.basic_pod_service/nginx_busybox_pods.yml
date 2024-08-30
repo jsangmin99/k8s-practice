@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nginx-busybox-pod
+  namespace: sm
+  labels:
+    app: nginx-busybox-pod
+
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      ports:
+      - containerPort: 80
+      
+    - name: busybox
+      image: busybox
+      # 같은 공간안이므로 localhost로 연결가능
+      command: ['sh', '-c', 'while true; do wget -qO- http://localhost:80; sleep 5; done']
