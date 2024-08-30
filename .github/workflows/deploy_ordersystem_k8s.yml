@@ -44,4 +44,4 @@ jobs:
       - name: kubectl apply
         run: |
           kubectl apply -f ./OrderSystem/k8s/ordersystem_depl.yml
-          kubctl rollout restart deployment ordersystem-deployment -n sm
+          kubectl rollout restart deployment ordersystem-deployment -n sm
