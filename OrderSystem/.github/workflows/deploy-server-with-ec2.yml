@@ -1,0 +1,98 @@
+
+name: deploy to ec2 with jar
+# 1. 트리거 생성(main브랜치에 push 될때 현재 스크립트 실행 트리거 발동)
+on:
+  push:
+    branches:
+      - main
+# 워크플로우는 하나 이상의 작업(job)으로 구성, 여기서는 하나의 작업만을 정의 (job의 이름 은 사용자 맘대로)
+jobs:
+  build-and-deploy:
+    runs-on : ubuntu-latest
+    # 각 작업은  여러 step(단계)로 구성
+    steps:
+      # actions 는 github에서 제공되는 공식 워크플로우
+      # chekout은 현재 repo의 main브랜치 소스코드를 카피
+      - name: source code checkout
+        uses: actions/checkout@v2
+
+      - name : setup java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+#        gradle build
+      - name: build jar
+#        bootjar : 실행가능한 jar 파일 생성
+#        build : 실행가능한 jar 파일 생성 + 테스트 실행
+        working-directory: .
+        run: |
+          chmod 777 ./gradlew
+          ./gradlew bootJar
+
+      - name: copy jar to ec2 inst1
+        uses: appleboy/scp-action@master
+        with:
+          host: ec2-3-219-34-145.compute-1.amazonaws.com
+          username: ubuntu
+#          pem key를 사용하여 접속
+          key: ${{ secrets.EC2_PEMKEY }}
+          source: "./build/libs/*.jar"
+          target: "/home/ubuntu"
+
+
+      - name: install java
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-3-219-34-145.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.EC2_PEMKEY }}
+          script: |
+            if ! type java > /dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y openjdk-11-jdk
+            else
+              echo "java is already installed"
+            fi
+            sudo killall java
+            nohup java -jar /home/ubuntu/build/libs/*.jar \
+            --spring.redis.host=${{secrets.REDIS_HOST}} \
+            --spring.datasource.url=jdbc:mariadb://${{secrets.DB_HOST}}:3306/ordersystem \
+            --spring.datasource.username=admin \
+            --spring.datasource.password=${{secrets.DB_PW }} \
+            --cloud.aws.credentials.accessKey=${{secrets.S3_KEY}} \
+            --cloud.aws.credentials.secretKey=${{secrets.S3_SECRET}} > /home/ubuntu/app.log 2>&1 &
+            
+
+      - name: copy jar to ec2 inst2
+        uses: appleboy/scp-action@master
+        with:
+          host: ec2-3-215-176-242.compute-1.amazonaws.com
+          username: ubuntu
+          #          pem key를 사용하여 접속
+          key: ${{ secrets.EC2_PEMKEY }}
+          source: "./build/libs/*.jar"
+          target: "/home/ubuntu"
+
+
+      - name: install java
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-3-215-176-242.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.EC2_PEMKEY }}
+          script: |
+            if ! type java > /dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y openjdk-11-jdk
+            else
+              echo "java is already installed"
+            fi
+            sudo killall java
+            nohup java -jar /home/ubuntu/build/libs/*.jar \
+            --spring.redis.host=${{secrets.REDIS_HOST}} \
+            --spring.datasource.url=jdbc:mariadb://${{secrets.DB_HOST}}:3306/ordersystem \
+            --spring.datasource.username=admin \
+            --spring.datasource.password=${{secrets.DB_PW }} \
+            --cloud.aws.credentials.accessKey=${{secrets.S3_KEY}} \
+            --cloud.aws.credentials.secretKey=${{secrets.S3_SECRET}} > /home/ubuntu/app.log 2>&1 &
