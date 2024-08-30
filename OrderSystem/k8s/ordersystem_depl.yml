@@ -23,11 +23,11 @@ spec:
             - containerPort: 8080
           resources:
             limits: # 최대 할당량
-              cpu: "0.2"
-              memory: "250Mi"
+              cpu: "0.5"
+              memory: "500Mi"
             requests: # 최소 할당량
-              cpu: "0.2"
-              memory: "250Mi"
+              cpu: "0.5"
+              memory: "500Mi"
           env:
           - name: REDIS_HOST
             valueFrom:
