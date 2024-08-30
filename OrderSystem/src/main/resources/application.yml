@@ -8,7 +8,7 @@ spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver  # 올바른 클래스 이름
     url: jdbc:mariadb://${DB_HOST}:3306/ordersystem
-    username: ${DB_USER}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     # 스프링에서 DB로의 connection 제한
     # 기본적으로 대략 10개 가량의 커넥션이 1개의 서버에서 발생
