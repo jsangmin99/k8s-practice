@@ -26,8 +26,8 @@ spec:
               cpu: "0.5"
               memory: "500Mi"
             requests: # 최소 할당량
-              cpu: "0.5"
-              memory: "500Mi"
+              cpu: "0.25"
+              memory: "250Mi"
           env:
           - name: REDIS_HOST
             valueFrom:
