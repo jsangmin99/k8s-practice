@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Service</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div th:replace="common/header :: headerFragment"></div>
+    <div style="margin-left: 10%; margin-right: 10%;">
+        <h3 style="text-align: center;">⏰ 글 작성하기</h3>
+        <form action="/post/create" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-group"> <!-- 부트스트랩 사용 -->
+                <label for="title">제목</label>
+                <input type="text" id="title" class="form-control" name="title" placeholder="제목을 작성하세요.">
+            </div>
+            <div class="form-group">
+                <label for="content">내용 입력</label><br>
+                <textarea name="content" id="content" class="form-control" rows="10" maxlen="800" placeholder="내용을 작성하세요."></textarea>
+<!--                <label for="email"> email </label>-->
+<!--                <input type="email" class="form-control" name="email" id="email">-->
+            </div>
+            <div>
+                <label>예약여부</label>
+                <input type="radio" name = "appointment" value="Y"> YES
+                <input type="radio" name = "appointment" value="N" checked> NO
+                <label>예약시간</label>
+                <input type="datetime-local" name="appointmentTime" id="appointmentTime">
+            </div>
+            <br>
+            <div class="float-end">
+                <button type="submit">SUBMIT</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html></html>

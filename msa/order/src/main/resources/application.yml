@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver  # 올바른 클래스 이름
+    url: jdbc:mariadb://${DB_HOST}:3306/ordersystem
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    # 스프링에서 DB로의 connection 제한
+    # 기본적으로 대략 10개 가량의 커넥션이 1개의 서버에서 발생
+    tomcat:
+      max-active: 5
+  redis:
+    # 아래 Redis_Host는 deployment에서 정의한 env변수명과 일치해야함
+    host: ${REDIS_HOST}
+    port: 6379
+
+  jpa:
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  #    아래의 name은 eureka에 등록할 서비스명을 지정하는 것
+  application:
+    name: order-service
+
+logging:
+  level:
+    root: info
+
+jwt:
+  expiration: 30
+  secretKey: ${JWT_SECRET_KEY}
+  expirationRt: 14400
+  secretKeyRt: ${JWT_SECRET_KEY_RT}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: sangmin-bucket
+
+

@@ -1,0 +1,75 @@
+# docker build후 ECR 업로드 및 kubectl apply
+
+name: deploy_ordersystem_k8s
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: install kubctl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.26.0'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: update cluster information
+        run: aws eks update-kubeconfig --name 5-team-cluster --region ap-northeast-2
+
+      - name: login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, and push Member
+        env:
+          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: sangmin-member
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          ./OrderSystem/Dockerfile ./msa/member
+          docker push $REGISTRY/$REPOSITORY:latest
+
+      - name: kubectl apply
+        run: |
+          kubectl apply -f ./msa/member/k8s/member_depl.yml
+          kubectl rollout restart deployment member-deployment -n sm
+
+      - name: Build and push Product
+        env:
+          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: sangmin-product
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          ./OrderSystem/Dockerfile ./msa/product
+          docker push $REGISTRY/$REPOSITORY:latest
+
+      - name: kubectl apply
+        run: |
+          kubectl apply -f ./msa/product/k8s/product_depl.yml
+          kubectl rollout restart deployment product-deployment -n sm
+
+      - name: Build and push Order
+        env:
+          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: sangmin-order
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          ./OrderSystem/Dockerfile ./msa/order
+          docker push $REGISTRY/$REPOSITORY:latest
+
+      - name: kubectl apply
+        run: |
+          kubectl apply -f ./msa/order/k8s/order_depl.yml
+          kubectl rollout restart deployment order-deployment -n sm

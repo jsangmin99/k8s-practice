@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Service</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        #update-form{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="common/header :: headerFragment"></div>
+
+<!-- container : 부트스트랩의 컨테이너 클래스는 페이지의 내용을
+중앙에 정렬하고 양쪽에 패딩을 추가하고 내용을 감싸는 역할-->
+
+
+<div class="container" style="text-align: center;">
+    <div class="page-header">
+        <h3>🖥️게시글 조회</h3>
+    </div>
+
+    <!-- <div class="float-end"><button class="btn btn-secondary">글쓰기</button></div> -->
+    <table class="table" style="margin-top: 50px;">
+        <tbody>
+        <tr>
+            <td>Id</td>
+            <td th:text="${post.id}"></td>
+        </tr>
+        <!-- <tr>
+            <td>User Id</td>
+            <td id="userId"></td>
+        </tr> -->
+        <tr>
+            <td>Title</td>
+            <td th:text="${post.title}"></td>
+        </tr>
+        <tr>
+            <td>Contents</td>
+            <td style="white-space: pre-wrap;word-break: break-all" th:text="${post.content}"></td>
+        </tr>
+        <tr>
+            <td>작성자</td>
+            <td th:text="${post.author_email}"></td>
+        </tr>
+
+        <tr>
+            <td>등록일</td>
+            <td th:text="${post.createdTime}"></td>
+        </tr>
+        <tr>
+            <td>수정일</td>
+            <td th:text="${post.updatedTime}"></td>
+        </tr>
+        </tbody>
+        <div class="float-end">
+            <button onclick="showUpdateForm()" class="btn btn-primary">수정</button>
+            <a th:href="@{/post/delete/{id}(id=${post.id})}" class="btn btn-primary"> 삭제 </a>
+        </div>
+        <br>
+        <div id="update-form" class="mt-4">
+            <form th:action="@{/post/update/{id}(id = ${post.id})}" method="post">
+                <div class="form-group">
+                    <label for="title"> 제목</label>
+                    <input type="text" class="form-control" name="title" id="title" th:value="${post.title}">
+                    <label for="content"> 내용</label>
+                    <input type="text" class="form-control" name="content" id="content" th:value="${post.content}">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-secondary">수정완료</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </table>
+</div>
+<script>
+    function showUpdateForm(){
+        document.getElementById('update-form').style.display = 'block';
+    }
+</script>
+
+</body>
+
+</html>
