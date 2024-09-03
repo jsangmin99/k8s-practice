@@ -70,3 +70,9 @@ spec:
               secretKeyRef:
                 key: JWT_SECRET_KEY
                 name: sm-app-secrets
+
+          - name: JWT_SECRET_KEY_RT
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET_KEY_RT
+                name: sm-app-secrets
