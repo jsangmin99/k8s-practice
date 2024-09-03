@@ -110,7 +110,7 @@ public class ProductService {
             byte[] imageByte = image.getBytes();
             String fileName = product.getId() + "_" + UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
 //            로컬 PC에 임시 저장
-            Path imagePath = Paths.get("/Users/jeonsangmin/Downloads/tmp",fileName);
+            Path imagePath = Paths.get("/tmp",fileName);
             Files.write(imagePath, imageByte, StandardOpenOption.CREATE ,StandardOpenOption.WRITE);
 
 //            AWS에 pc에 저장된 파일을 업로드
