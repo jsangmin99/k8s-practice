@@ -7,7 +7,7 @@ spring:
     # 스프링에서 DB로의 connection 제한
     # 기본적으로 대략 10개 가량의 커넥션이 1개의 서버에서 발생
     tomcat:
-      max-active: 5
+      max-active: 3
   redis:
     # 아래 Redis_Host는 deployment에서 정의한 env변수명과 일치해야함
     host: ${REDIS_HOST}
